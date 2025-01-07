@@ -1,0 +1,85 @@
+home.php
+<?php
+    session_start();
+    if(isset($_SESSION['username']))
+    {
+        echo "hai"." ".$_SESSION['username'];
+    }
+    else
+    {
+        echo "Error occured";
+    }
+?>
+login.php
+
+  <?php
+session_start();
+?>
+<html>
+    <head>
+        <title>login page</title>
+        <style>
+            td{
+                padding:8px;
+            }
+            input{
+                padding:5px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <center>
+            <form action="#" method="POST">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td>User Name: <td>
+                            <td><input type="text" name="uname"></td>
+                        </tr>
+                        <tr>
+                            <td>Password : <td>
+                            <td><input type="password" name="passcode"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2"><input type="submit" name="login" value="login" id="btn"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </center>
+    </body>
+</html>
+<?php
+require "connection.php";
+if(isset($_POST['login']))
+{
+    $user = $_POST['uname'];
+    $passcode = $_POST['passcode'];
+    $login_query = "select * from logintbl where name='$user'and password='$passcode'";
+    $login_result = mysqli_query($con,$login_query);
+    $login_values = mysqli_fetch_array($login_result);
+    if(!$login_result)
+    {
+        echo "login error";
+    }
+    $login_rows = mysqli_num_rows($login_result);
+    if($login_rows == 1)
+    {
+        $_SESSION['username'] = $login_values[0];
+        header("location:home.php");
+    }
+    else
+    {
+        echo "<script>alert('there is no user')</script>";
+    }
+}
+?>
+connection.php
+<?php
+    $con = mysqli_connect("localhost","root","","sampledb");
+    if(!$con)
+    {
+        echo "<script>alert(\"Connection Error!\");</script>";
+    }
+?>
